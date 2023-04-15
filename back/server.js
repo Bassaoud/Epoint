@@ -51,12 +51,6 @@ const upload = multer({
   }
 });
 
-// Endpoint pour l'upload de PDF
-app.post('/upload_pdf', upload.single('pdf_file'), (req, res) => {
-  console.log('Fichier PDF téléchargé :', req.file.path);
-  res.sendStatus(200);
-});
-
 // Endpoint pour l'impression de PDF
 app.post('/print_pdf', upload.single('pdf_file'), (req, res) => {
   if (!req.file) {
