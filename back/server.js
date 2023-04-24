@@ -5,6 +5,7 @@ const pdfPrinter = require('pdf-to-printer');
 const fs = require('fs');
 const winston = require('winston');
 const path = require('path');
+const cors = require('cors');
 
 // Winston pour créer un fichier de log
 const logger = winston.createLogger({
@@ -15,15 +16,16 @@ const logger = winston.createLogger({
   ]
 });
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Endpoint pour afficher le formulaire d'impression
 app.get('/', (req, res) => {
   res.send(`
     <html>
       <body>
-        <h1>Impression PDF</h1>
-        <form action="/print_pdf" method="post" enctype="multipart/form-data">
-          <input type="file" name="pdf_file" />
-          <button type="submit">Imprimer</button>
-        </form>
+        <h1>Server working</h1>
       </body>
     </html>
   `);
@@ -33,7 +35,7 @@ app.get('/', (req, res) => {
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, callback) => {
-      callback(null, '../uploads');
+      callback(null, path.join(__dirname, '..', 'uploads'));
     },
     filename: (req, file, callback) => {
       const now = new Date();
@@ -62,6 +64,7 @@ const upload = multer({
 app.post('/print_pdf', upload.single('pdf_file'), (req, res) => {
   if (!req.file) {
     res.status(400).send('Aucun fichier n\'a été uploadé.');
+    
     logger.error('Aucun fichier n\'a été uploadé.');
 
     return;
@@ -87,6 +90,7 @@ app.post('/print_pdf', upload.single('pdf_file'), (req, res) => {
 
 
 // Configuration du serveur pour écouter les requêtes sur le port 3001
+
 app.listen(3001, () => {
   console.log('Serveur démarré sur le port 3001');
 });
