@@ -16,7 +16,7 @@ const PdfForm = () => {
     } catch (error) {
       console.error(error);
       setError('Erreur lors de l\'impression');
-    } finally {
+    } finally { 
       setLoading(false);
     }
   };
